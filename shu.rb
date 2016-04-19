@@ -7,33 +7,36 @@
       title "OrdenApp", :align => 'center', stroke: white
       para " La mejor forma de ordenar tus carpetas y archivos", :align => 'center', stroke: white
     
-      @caja= edit_line width: 300
-      @caja.move(150,150)
       @b1 = button "Ordename!!", :width =>90 , :height => 30
-      @b1.move(250,250)
-      @bajada = para "Ingresa la ruta de la carpeta a ordenar", :align=> 'center'
-      @bajada.move(0, 190)
+      @b1.move(250,300)
+      @b2= button "Selecciona Carpeta a Ordenar", :width => 220
+      @b2.move(180,140)
+      @b2.click(){
+      @folder = ask_open_folder
+      stack do
+      @ruta_carpeta= para @folder, :align =>'center', :height => 200
+      @ruta_carpeta.move(0,200)
+      end
+      }
 
       @b1.click(){
 
-
-      	ruta = pwd()
-         ruta_destino = @caja.text()
+         ruta_destino = @folder
          Dir.chdir(ruta_destino)
          FileUtils::mkdir_p "pdf's"
-      	FileUtils::mkdir_p "zip_rar_targz"
-      	FileUtils::mkdir_p "ejecutables"
-      	FileUtils::mkdir_p "documentos"
-      	FileUtils::mkdir_p "otros"
+         FileUtils::mkdir_p "zip_rar_targz"
+         FileUtils::mkdir_p "ejecutables"
+         FileUtils::mkdir_p "documentos"
+         FileUtils::mkdir_p "otros"
          FileUtils::mkdir_p "imagenes"
-      	@vector = Array.new
+         @vector = Array.new
          @otros = Array.new
          @rar = Array.new
          @pdf = Array.new
          @docu = Array.new
          @ima= Array.new
-      	Dir.glob("*.*").each do |nombres|
-      		@vector <<nombres
+         Dir.glob("*.*").each do |nombres|
+            @vector <<nombres
             if /.\.rar/.match(nombres)
                @rar <<nombres
             elsif /.\.zip/.match(nombres)
@@ -57,27 +60,27 @@
             else
                @otros <<nombres
             end
-      	end
+         end
 
       @otros.each do |nomb|
 
-         FileUtils.mv ruta + "/" + nomb, ruta + "/otros"
+         FileUtils.mv ruta_destino + "/" + nomb, ruta_destino + "/otros"
       end
       @rar.each do |nomb|
 
-         FileUtils.mv ruta + "/" + nomb, ruta + "/zip_rar_targz"
+         FileUtils.mv ruta_destino + "/" + nomb, ruta_destino + "/zip_rar_targz"
       end
       @pdf.each do |nomb|
 
-         FileUtils.mv ruta + "/" + nomb, ruta + "/pdf's"
+         FileUtils.mv ruta_destino + "/" + nomb, ruta_destino + "/pdf's"
       end
       @docu.each do |nomb|
 
-         FileUtils.mv ruta + "/" + nomb, ruta + "/documentos"
+         FileUtils.mv ruta_destino + "/" + nomb, ruta_destino + "/documentos"
       end
       @ima.each do |nomb|
 
-         FileUtils.mv ruta + "/" + nomb, ruta + "/documentos"
+         FileUtils.mv ruta_destino + "/" + nomb, ruta_destino + "/imagenes"
       end
       alert("Carpeta fue ordenada correctamente!")
       }
